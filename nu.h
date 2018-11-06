@@ -19,4 +19,13 @@ float nu_random_float(struct nu_random_state *);
 void nu_random_array(struct nu_random_state *, uint64_t [], size_t);
 void nu_random_array_float(struct nu_random_state *, float [], size_t);
 
+struct nu_sum_state {
+    float sp[256];
+    float sn[256];
+};
+void nu_sum_init(struct nu_sum_state *);
+void nu_sum_add(struct nu_sum_state *, float);
+float nu_sum_sum(struct nu_sum_state *);
+float nu_sum(float [], size_t);
+
 #endif
