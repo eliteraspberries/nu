@@ -6,6 +6,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+float nu_cos(float);
+float nu_sin(float);
+void nu_array_cos(float [], float [], size_t);
+void nu_array_sin(float [], float [], size_t);
+
 struct nu_random_state {
     uint64_t s0;
     uint64_t s1;
