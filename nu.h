@@ -7,8 +7,12 @@
 #include <stdint.h>
 
 float nu_cos(float);
+float nu_exp(float);
+float nu_log(float);
 float nu_sin(float);
 void nu_array_cos(float [], float [], size_t);
+void nu_array_exp(float [], float [], size_t);
+void nu_array_log(float [], float [], size_t);
 void nu_array_sin(float [], float [], size_t);
 
 struct nu_random_state {
