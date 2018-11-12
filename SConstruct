@@ -25,6 +25,13 @@ default_flags = {
     ],
 }
 
+debug_flags = {
+    'CFLAGS': [
+        '-g',
+        '-O0',
+    ],
+}
+
 
 def CheckCCFlag(ctx, flag):
     src = '''int main(void) {return 0;}'''
@@ -50,11 +57,15 @@ for flags in ['CFLAGS', 'LINKFLAGS']:
 conf.env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
 if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
+if not conf.CheckLib('m'):
+    Exit(1)
 conf.env.MergeFlags({'CPPDEFINES': default_flags['CPPDEFINES']})
 for cflag in default_flags['CFLAGS']:
     if conf.CheckCCFlag(cflag):
         conf.env.Append(CFLAGS=[cflag])
 env = conf.Finish()
+debug_env = env.Clone()
+debug_env.MergeFlags(debug_flags)
 
 src = [
     'amath.c',
@@ -62,9 +73,16 @@ src = [
     'sum.c',
 ]
 
-libnu = env.SharedLibrary('nu', src)
+libnu = env.SharedLibrary('nu', src, LIBS=[])
 
-all = [libnu]
+tests = [
+    'test-sum',
+]
+
+for i, test in enumerate(tests):
+    tests[i] = debug_env.Program(test, [test + '.c'], LIBS=[libnu, 'm'])
+
+all = [libnu] + tests
 
 Default(all)
 env.Alias('all', all)
