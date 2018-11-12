@@ -12,9 +12,28 @@ headers = [
     'stdlib.h',
 ]
 
+default_flags = {
+    'CFLAGS': [
+        '-std=c99',
+        '-fno-fast-math',
+        '-fpic',
+    ],
+}
+
+
+def CheckCCFlag(ctx, flag):
+    src = '''int main(void) {return 0;}'''
+    ctx.Message('Checking if compiler supports ' + flag + '... ')
+    cflags = ctx.env['CFLAGS']
+    ctx.env.Append(CFLAGS=[flag])
+    result = ctx.TryCompile(src, '.c')
+    ctx.env.Replace(CFLAGS=cflags)
+    ctx.Result(result)
+    return result
+
 
 env = Environment(ENV=os.environ)
-conf = Configure(env)
+conf = Configure(env, custom_tests={'CheckCCFlag': CheckCCFlag})
 conf.env.Append(ENV={'PATH' : os.environ['PATH']})
 for var in ['AR', 'AS', 'CC', 'CPP', 'CXX', 'LD', 'RANLIB']:
     if var in os.environ:
@@ -26,6 +45,9 @@ for flags in ['CFLAGS', 'LINKFLAGS']:
 conf.env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
 if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
+for cflag in default_flags['CFLAGS']:
+    if conf.CheckCCFlag(cflag):
+        conf.env.Append(CFLAGS=[cflag])
 env = conf.Finish()
 
 src = [
