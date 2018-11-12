@@ -7,7 +7,7 @@
 #include <math.h>
 
 static inline float
-__cos(float x)
+__nu_cos(float x)
 {
     const float pi = (float) M_PI;
     const float  a2 = -0.4999999963f;
@@ -25,22 +25,22 @@ __cos(float x)
 }
 
 static inline float
-_cos(float x)
+_nu_cos(float x)
 {
     const float pi = (float) M_PI;
     if (x >= 0.f) {
         if (x <= 0.5f * pi) {
-            return __cos(x);
+            return __nu_cos(x);
         } else if (x <= pi) {
-            return -1.f * _cos(pi - x);
+            return -1.f * _nu_cos(pi - x);
         } else if (x <= 2.f * pi) {
-            return -1.f * _cos(x - pi);
+            return -1.f * _nu_cos(x - pi);
         } else {
             int k = (int) (x / (2.f * pi));
-            return _cos(x - (float) k * 2.f * pi);
+            return _nu_cos(x - (float) k * 2.f * pi);
         }
     } else {
-        return _cos(-1.f * x);
+        return _nu_cos(-1.f * x);
     }
 }
 

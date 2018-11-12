@@ -82,7 +82,7 @@ nu_sum_init(struct nu_sum_state *state)
 }
 
 static inline float
-add(float a, float b, float *e)
+_nu_add(float a, float b, float *e)
 {
     float s = a + b;
     *e = (a - s) + b;
@@ -99,7 +99,7 @@ nu_sum_add(struct nu_sum_state *state, float x)
         for (size_t i = 0; i < 256; i++) {
             if (x < ws[i]) {
                 float e;
-                sp[i] = add(sp[i], x, &e);
+                sp[i] = _nu_add(sp[i], x, &e);
                 if (e != 0.f) {
                     nu_sum_add(state, e);
                 }
@@ -109,7 +109,7 @@ nu_sum_add(struct nu_sum_state *state, float x)
         for (size_t i = 0; i < 255; i++) {
             if (sp[i] > ws[i]) {
                 float e;
-                sp[i + 1] = add(sp[i + 1], sp[i], &e);
+                sp[i + 1] = _nu_add(sp[i + 1], sp[i], &e);
                 sp[i] = 0.f;
                 if (e != 0.f) {
                     nu_sum_add(state, e);
@@ -122,7 +122,7 @@ nu_sum_add(struct nu_sum_state *state, float x)
         for (size_t i = 0; i < 256; i++) {
             if (x > -ws[i]) {
                 float e;
-                sn[i] = add(sn[i], x, &e);
+                sn[i] = _nu_add(sn[i], x, &e);
                 if (e != 0.f) {
                     nu_sum_add(state, e);
                 }
@@ -132,7 +132,7 @@ nu_sum_add(struct nu_sum_state *state, float x)
         for (size_t i = 0; i < 255; i++) {
             if (sn[i] < -ws[i]) {
                 float e;
-                sn[i + 1] = add(sn[i + 1], sn[i], &e);
+                sn[i + 1] = _nu_add(sn[i + 1], sn[i], &e);
                 sn[i] = 0.f;
                 if (e != 0.f) {
                     nu_sum_add(state, e);

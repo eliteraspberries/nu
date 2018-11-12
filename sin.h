@@ -7,7 +7,7 @@
 #include <math.h>
 
 static inline float
-__sin(float x)
+__nu_sin(float x)
 {
     const float pi = (float) M_PI;
     const float  a2 = -0.1666666664f;
@@ -25,22 +25,22 @@ __sin(float x)
 }
 
 static inline float
-_sin(float x)
+_nu_sin(float x)
 {
     const float pi = (float) M_PI;
     if (x >= 0.f) {
         if (x <= 0.5f * pi) {
-            return x * __sin(x);
+            return x * __nu_sin(x);
         } else if (x <= pi) {
-            return _sin(pi - x);
+            return _nu_sin(pi - x);
         } else if (x <= 2.f * pi) {
-            return -1.f * _sin(x - pi);
+            return -1.f * _nu_sin(x - pi);
         } else {
             int k = (int) (x / (2.f * pi));
-            return _sin(x - (float) k * 2.f * pi);
+            return _nu_sin(x - (float) k * 2.f * pi);
         }
     } else {
-        return -1.f * _sin(-1.f * x);
+        return -1.f * _nu_sin(-1.f * x);
     }
 }
 

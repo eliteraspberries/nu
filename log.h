@@ -8,7 +8,7 @@
 #include <math.h>
 
 static inline float
-__log(float x)
+__nu_log(float x)
 {
     const float a1 =  0.9999964239f;
     const float a2 = -0.4998741238f;
@@ -32,17 +32,17 @@ __log(float x)
 }
 
 static inline float
-_log(float x)
+_nu_log(float x)
 {
     const float log2 = (float) M_LN2;
     if (x >= 1.f) {
         if (x <= 2.f) {
-            return __log(x);
+            return __nu_log(x);
         } else {
-            return log2 + _log(0.5f * x);
+            return log2 + _nu_log(0.5f * x);
         }
     } else if (x > 0.f) {
-        return -1.f * _log(1.f / x);
+        return -1.f * _nu_log(1.f / x);
     } else {
         return -INFINITY;
     }

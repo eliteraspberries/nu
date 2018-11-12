@@ -7,7 +7,7 @@
 #include <math.h>
 
 static inline float
-__exp(float x)
+__nu_exp(float x)
 {
     const float ln2 = (float) M_LN2;
     const float a1 = -0.9999999995f;
@@ -30,17 +30,17 @@ __exp(float x)
 }
 
 static inline float
-_exp(float x)
+_nu_exp(float x)
 {
     const float ln2 = (float) M_LN2;
     if (x >= 0.f) {
         if (x <= ln2) {
-            return __exp(x);
+            return __nu_exp(x);
         } else {
-            return 2.f * _exp(x - ln2);
+            return 2.f * _nu_exp(x - ln2);
         }
     } else {
-        return 1.f / _exp(-x);
+        return 1.f / _nu_exp(-x);
     }
 }
 
