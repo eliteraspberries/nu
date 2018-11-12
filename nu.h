@@ -15,6 +15,8 @@ void nu_array_exp(float [], float [], size_t);
 void nu_array_log(float [], float [], size_t);
 void nu_array_sin(float [], float [], size_t);
 
+typedef struct {float a, b;} nu_tuplefloat;
+
 struct nu_random_state {
     uint64_t s0;
     uint64_t s1;
@@ -36,5 +38,6 @@ void nu_sum_init(struct nu_sum_state *);
 void nu_sum_add(struct nu_sum_state *, float);
 float nu_sum_sum(struct nu_sum_state *);
 float nu_sum(float [], size_t);
+nu_tuplefloat nu_meanvar(float [], size_t);
 
 #endif

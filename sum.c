@@ -164,3 +164,21 @@ nu_sum(float x[], size_t n)
     }
     return nu_sum_sum(&state);
 }
+
+nu_tuplefloat
+nu_meanvar(float x[], size_t n)
+{
+    struct nu_sum_state sumx_state;
+    struct nu_sum_state sumx2_state;
+    nu_sum_init(&sumx_state);
+    nu_sum_init(&sumx2_state);
+    for (size_t i = 0; i < n; i++) {
+        nu_sum_add(&sumx_state, x[i]);
+        nu_sum_add(&sumx2_state, x[i] * x[i]);
+    }
+    float sumx = nu_sum_sum(&sumx_state);
+    float sumx2 = nu_sum_sum(&sumx2_state);
+    float mean = sumx / n;
+    float var = (sumx2 - mean * sumx) / n;
+    return (nu_tuplefloat) {mean, var};
+}
