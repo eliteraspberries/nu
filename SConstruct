@@ -17,9 +17,11 @@ default_flags = {
         ('_XOPEN_SOURCE', '500'),
     ],
     'CFLAGS': [
-        '-std=c99',
         '-fno-fast-math',
         '-fpic',
+        '-std=c99',
+        '-Wall',
+        '-Wno-float-equal',
     ],
 }
 
