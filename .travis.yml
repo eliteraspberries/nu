@@ -5,5 +5,12 @@ compiler:
 os:
   - linux
   - osx
+addons:
+  apt:
+    packages:
+      - scons
+  homebrew:
+    packages:
+      - scons
 script:
   - scons
