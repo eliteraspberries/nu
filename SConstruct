@@ -13,6 +13,9 @@ headers = [
 ]
 
 default_flags = {
+    'CPPFLAGS': [
+        '-D_XOPEN_SOURCE=500',
+    ],
     'CFLAGS': [
         '-std=c99',
         '-fno-fast-math',
@@ -45,6 +48,7 @@ for flags in ['CFLAGS', 'LINKFLAGS']:
 conf.env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
 if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
+conf.env.MergeFlags({'CPPFLAGS': default_flags['CPPFLAGS']})
 for cflag in default_flags['CFLAGS']:
     if conf.CheckCCFlag(cflag):
         conf.env.Append(CFLAGS=[cflag])
