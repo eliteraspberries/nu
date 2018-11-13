@@ -1,6 +1,8 @@
 from __future__ import print_function
 
+import functools
 import os
+import platform
 import subprocess
 
 
@@ -47,13 +49,19 @@ def CheckCCFlag(ctx, flag):
     return result
 
 
-def run(target, source, env):
+def run(penv, target, source, env):
     tgt = str(target.pop().abspath)
     for src in source:
         src = str(src.abspath)
         print(os.path.basename(src), end='... ')
         with open(tgt, 'w+') as log:
-            p = subprocess.Popen(src, stdout=log, stderr=log, shell=True)
+            p = subprocess.Popen(
+                src,
+                env=penv,
+                stdout=log,
+                stderr=log,
+                shell=True,
+            )
             p.wait()
         if p.returncode == 0:
             print('pass')
@@ -106,6 +114,13 @@ all = [libnu] + tests
 Default(all)
 env.Alias('all', all)
 
+dir = os.path.abspath('.')
+sys = platform.system()
+if sys == 'Darwin':
+    penv = {'DYLD_FALLBACK_LIBRARY_PATH': dir}
+else:
+    penv = {'LD_LIBRARY_PATH': dir}
+run = functools.partial(run, penv)
 check = Command('check.log', tests, run)
 AlwaysBuild(check)
 env.Alias('check', check)
