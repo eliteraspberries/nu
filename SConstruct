@@ -26,6 +26,7 @@ default_flags = {
         '-fpic',
         '-std=c99',
         '-Wall',
+        '-Wextra',
         '-Wno-float-equal',
     ],
 }
