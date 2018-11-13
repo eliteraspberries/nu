@@ -22,6 +22,7 @@ void nu_array_cos(float [], float [], size_t);
 void nu_array_exp(float [], float [], size_t);
 void nu_array_log(float [], float [], size_t);
 void nu_array_sin(float [], float [], size_t);
+void nu_array_linspace(float [], float, float, size_t);
 
 struct nu_random_state {
     uint64_t s0;

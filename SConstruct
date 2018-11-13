@@ -105,6 +105,7 @@ libnu = env.SharedLibrary('nu', src, LIBS=[])
 
 tests = [
     'test-amath',
+    'test-array',
     'test-random',
     'test-sum',
 ]

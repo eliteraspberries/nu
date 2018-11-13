@@ -1,5 +1,6 @@
 /* Copyright 2018, Mansour Moufid <mansourmoufid@gmail.com> */
 
+#include <assert.h>
 #include <stddef.h>
 
 #include "nu.h"
@@ -79,5 +80,17 @@ nu_array_sin(float z[], float x[], size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = _nu_sin(x[i]);
+    }
+}
+
+void
+nu_array_linspace(float z[], float start, float stop, size_t n)
+{
+    float x = start;
+    assert(n > 1);
+    float dx = (stop - start) / ((float) (n - 1));
+    for (size_t i = 0; i < n; i++) {
+        z[i] = x;
+        x += dx;
     }
 }
