@@ -6,17 +6,18 @@
 #include <stddef.h>
 #include <stdint.h>
 
+typedef struct {uint32_t a, b;} nu_tuple32;
+typedef struct {float a, b;} nu_tuplefloat;
+
 float nu_cos(float);
 float nu_exp(float);
 float nu_log(float);
 float nu_sin(float);
+
 void nu_array_cos(float [], float [], size_t);
 void nu_array_exp(float [], float [], size_t);
 void nu_array_log(float [], float [], size_t);
 void nu_array_sin(float [], float [], size_t);
-
-typedef struct {uint32_t a, b;} nu_tuple32;
-typedef struct {float a, b;} nu_tuplefloat;
 
 struct nu_random_state {
     uint64_t s0;

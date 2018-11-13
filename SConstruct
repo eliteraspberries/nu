@@ -95,6 +95,7 @@ debug_env.MergeFlags(debug_flags)
 
 src = [
     'amath.c',
+    'array.c',
     'random.c',
     'sum.c',
 ]
