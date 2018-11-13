@@ -1,9 +1,11 @@
 /* Copyright 2018, Mansour Moufid <mansourmoufid@gmail.com> */
 
+#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 
 #include "nu.h"
+#include "boxmuller.h"
 
 static inline nu_tuple32
 split64(uint64_t x)
@@ -119,5 +121,39 @@ nu_random_array_float(struct nu_random_state *state, float x[], size_t n)
     if (n % 2 != 0) {
         nu_tuplefloat y = uint64totuplefloat(next(state));
         x[n - 1] = y.a;
+    }
+}
+
+static inline nu_tuplefloat
+_nu_gauss(nu_tuplefloat x)
+{
+    assert(x.a >= 0.f && x.a < 1.f);
+    assert(x.b >= 0.f && x.b < 1.f);
+    x.a += 0x1p-127f;
+    x.b += 0x1p-127f;
+    return _nu_boxmuller(x);
+}
+
+float
+nu_random_gauss(struct nu_random_state *state)
+{
+    nu_tuplefloat x = uint64totuplefloat(next(state));
+    nu_tuplefloat y = _nu_gauss(x);
+    return y.a;
+}
+
+void
+nu_random_array_gauss(struct nu_random_state *state, float x[], size_t n)
+{
+    for (size_t i = 0; i < n / 2; i++) {
+        nu_tuplefloat y = uint64totuplefloat(next(state));
+        nu_tuplefloat z = _nu_gauss(y);
+        x[2 * i] = z.a;
+        x[2 * i + 1] = z.b;
+    }
+    if (n % 2 != 0) {
+        nu_tuplefloat y = uint64totuplefloat(next(state));
+        nu_tuplefloat z = _nu_gauss(y);
+        x[n - 1] = z.a;
     }
 }

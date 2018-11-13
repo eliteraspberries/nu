@@ -27,6 +27,12 @@ main(void)
     var = meanvar.b;
     assert(nu_eq(mean, 0.50000f, error));
     assert(nu_eq(var, 0.08333f, error));
+    nu_random_array_gauss(&s, x, n);
+    meanvar = nu_meanvar(x, n);
+    mean = meanvar.a;
+    var = meanvar.b;
+    assert(nu_eq(mean, 0.f, error));
+    assert(nu_eq(var, 1.f, error));
     free(x);
     return 0;
 }
