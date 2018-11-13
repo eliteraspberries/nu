@@ -1,4 +1,7 @@
+from __future__ import print_function
+
 import os
+import subprocess
 
 
 headers = [
@@ -44,9 +47,24 @@ def CheckCCFlag(ctx, flag):
     return result
 
 
+def run(target, source, env):
+    tgt = str(target.pop().abspath)
+    for src in source:
+        src = str(src.abspath)
+        print(os.path.basename(src), end='... ')
+        with open(tgt, 'w+') as log:
+            p = subprocess.Popen(src, stdout=log, stderr=log, shell=True)
+            p.wait()
+        if p.returncode == 0:
+            print('pass')
+        else:
+            print('fail')
+            Exit(1)
+
+
 env = Environment(ENV=os.environ)
 conf = Configure(env, custom_tests={'CheckCCFlag': CheckCCFlag})
-conf.env.Append(ENV={'PATH' : os.environ['PATH']})
+conf.env.Append(ENV={'PATH': os.environ['PATH']})
 for var in ['AR', 'AS', 'CC', 'CPP', 'CXX', 'LD', 'RANLIB']:
     if var in os.environ:
         conf.env.Replace(**{var: os.environ[var]})
@@ -87,3 +105,7 @@ all = [libnu] + tests
 
 Default(all)
 env.Alias('all', all)
+
+check = Command('check.log', tests, run)
+AlwaysBuild(check)
+env.Alias('check', check)
