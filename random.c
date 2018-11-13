@@ -5,6 +5,14 @@
 
 #include "nu.h"
 
+static inline nu_tuple32
+split64(uint64_t x)
+{
+    uint32_t a = (uint32_t) (x);
+    uint32_t b = (uint32_t) (x >> 32);
+    return (nu_tuple32) {a, b};
+}
+
 #define C0 3141592653589793238ULL
 #define C1 4626433832795028841ULL
 #define C2 9716939937510582097ULL
@@ -78,10 +86,18 @@ uint32tofloat(uint32_t x)
     return u.f;
 }
 
+static inline nu_tuplefloat
+uint64totuplefloat(uint64_t x)
+{
+    nu_tuple32 u = split64(x);
+    return (nu_tuplefloat) {uint32tofloat(u.a), uint32tofloat(u.b)};
+}
+
 float
 nu_random_float(struct nu_random_state *state)
 {
-    return uint32tofloat((uint32_t) next(state));
+    nu_tuplefloat x = uint64totuplefloat(next(state));
+    return x.a;
 }
 
 void
@@ -95,18 +111,13 @@ nu_random_array(struct nu_random_state *state, uint64_t x[], size_t n)
 void
 nu_random_array_float(struct nu_random_state *state, float x[], size_t n)
 {
-    uint64_t w;
-    uint32_t a, b;
     for (size_t i = 0; i < n / 2; i++) {
-        w = next(state);
-        a = (uint32_t) (w);
-        b = (uint32_t) (w >> 32);
-        x[2 * i] = uint32tofloat(a);
-        x[2 * i + 1] = uint32tofloat(b);
+        nu_tuplefloat y = uint64totuplefloat(next(state));
+        x[2 * i] = y.a;
+        x[2 * i + 1] = y.b;
     }
     if (n % 2 != 0) {
-        w = next(state);
-        a = (uint32_t) (w);
-        x[n - 1] = uint32tofloat(a);
+        nu_tuplefloat y = uint64totuplefloat(next(state));
+        x[n - 1] = y.a;
     }
 }

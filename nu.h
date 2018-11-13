@@ -15,6 +15,7 @@ void nu_array_exp(float [], float [], size_t);
 void nu_array_log(float [], float [], size_t);
 void nu_array_sin(float [], float [], size_t);
 
+typedef struct {uint32_t a, b;} nu_tuple32;
 typedef struct {float a, b;} nu_tuplefloat;
 
 struct nu_random_state {
