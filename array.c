@@ -8,6 +8,48 @@
 #include "log.h"
 #include "sin.h"
 
+float
+nu_array_max(float x[], size_t n)
+{
+    assert(n > 0);
+    float max = x[0];
+    for (size_t i = 1; i < n; i++) {
+        if (x[i] > max) {
+            max = x[i];
+        }
+    }
+    return max;
+}
+
+float
+nu_array_min(float x[], size_t n)
+{
+    assert(n > 0);
+    float min = x[0];
+    for (size_t i = 1; i < n; i++) {
+        if (x[i] < min) {
+            min = x[i];
+        }
+    }
+    return min;
+}
+
+void
+nu_array_add(float z[], float x[], float y[], size_t n)
+{
+    for (size_t i = 0; i < n; i++) {
+        z[i] = x[i] + y[i];
+    }
+}
+
+void
+nu_array_mul(float z[], float x[], float y[], size_t n)
+{
+    for (size_t i = 0; i < n; i++) {
+        z[i] = x[i] * y[i];
+    }
+}
+
 void
 nu_array_cos(float z[], float x[], size_t n)
 {
