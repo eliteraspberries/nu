@@ -8,6 +8,7 @@
 
 typedef struct {uint32_t a, b;} nu_tuple32;
 typedef struct {float a, b;} nu_tuplefloat;
+typedef struct {float r, i;} nu_complex;
 
 float nu_cos(float);
 float nu_exp(float);
@@ -18,6 +19,9 @@ float nu_array_max(float [], size_t);
 float nu_array_min(float [], size_t);
 void nu_array_add(float [], float [], float [], size_t);
 void nu_array_mul(float [], float [], float [], size_t);
+void nu_array_cadd(nu_complex [], nu_complex [], nu_complex [], size_t);
+void nu_array_cmul(nu_complex [], nu_complex [], nu_complex [], size_t);
+void nu_array_conj(nu_complex [], nu_complex [], size_t);
 void nu_array_cos(float [], float [], size_t);
 void nu_array_exp(float [], float [], size_t);
 void nu_array_log(float [], float [], size_t);

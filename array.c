@@ -51,6 +51,51 @@ nu_array_mul(float z[], float x[], float y[], size_t n)
     }
 }
 
+static inline nu_complex
+_nu_cadd(nu_complex x, nu_complex y)
+{
+    return (nu_complex) {x.r + y.r, x.i + y.i};
+}
+
+void
+nu_array_cadd(nu_complex z[], nu_complex x[], nu_complex y[], size_t n)
+{
+    for (size_t i = 0; i < n; i++) {
+        z[i] = _nu_cadd(x[i], y[i]);
+    }
+}
+
+static inline nu_complex
+_nu_cmul(nu_complex x, nu_complex y)
+{
+    return (nu_complex) {
+        x.r * y.r - x.i * y.i,
+        x.r * y.i + x.i * y.r,
+    };
+}
+
+void
+nu_array_cmul(nu_complex z[], nu_complex x[], nu_complex y[], size_t n)
+{
+    for (size_t i = 0; i < n; i++) {
+        z[i] = _nu_cmul(x[i], y[i]);
+    }
+}
+
+static inline nu_complex
+_nu_conj(nu_complex x)
+{
+    return (nu_complex) {x.r, -x.i};
+}
+
+void
+nu_array_conj(nu_complex z[], nu_complex x[], size_t n)
+{
+    for (size_t i = 0; i < n; i++) {
+        z[i] = _nu_conj(x[i]);
+    }
+}
+
 void
 nu_array_cos(float z[], float x[], size_t n)
 {
