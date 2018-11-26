@@ -1,4 +1,7 @@
 .scon*
+check.log
 config.log
 *.o
+*.os
+*.so
 *.dSYM
