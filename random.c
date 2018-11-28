@@ -68,6 +68,42 @@ next(struct nu_random_state *state)
     return result;
 }
 
+static inline void
+jump(struct nu_random_state *state)
+{
+    const uint64_t JUMP[] = {
+        0x180ec6d33cfd0aba,
+        0xd5a61266f0c9392c,
+        0xa9582618e03fc9aa,
+        0x39abdc4529b1661c,
+    };
+    uint64_t s0 = 0;
+    uint64_t s1 = 0;
+    uint64_t s2 = 0;
+    uint64_t s3 = 0;
+    for (size_t i = 0; i < 4; i++) {
+        for (int b = 0; b < 64; b++) {
+            if (JUMP[i] & (uint64_t) 1 << b) {
+                s0 ^= state->s0;
+                s1 ^= state->s1;
+                s2 ^= state->s2;
+                s3 ^= state->s3;
+            }
+            next(state);
+        }
+    }
+    state->s0 = s0;
+    state->s1 = s1;
+    state->s2 = s2;
+    state->s3 = s3;
+}
+
+void
+nu_random_jump(struct nu_random_state *state)
+{
+    jump(state);
+}
+
 uint64_t
 nu_random(struct nu_random_state *state)
 {
