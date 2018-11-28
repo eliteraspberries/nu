@@ -131,11 +131,11 @@ nu_array_sin(float z[], float x[], size_t n)
 void
 nu_array_linspace(float z[], float start, float stop, size_t n)
 {
-    float x = start;
     assert(n > 1);
-    float dx = (stop - start) / ((float) (n - 1));
+    const float m = (float) n;
+    float j = 0.f;
     for (size_t i = 0; i < n; i++) {
-        z[i] = x;
-        x += dx;
+        z[i] = (start * m + (stop - start) * j) / m;
+        j += 1.f;
     }
 }
