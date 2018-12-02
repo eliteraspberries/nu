@@ -59,7 +59,7 @@ debug_flags = {
     ],
 }
 
-sys = platform.system()
+sys = os.environ.get('SYSTEM') or platform.system()
 
 
 def CheckCCFlag(ctx, flag):
@@ -94,7 +94,7 @@ def run(penv, target, source, env):
             Exit(1)
 
 
-env = Environment(ENV=os.environ)
+env = Environment(ENV=os.environ, platform=sys.lower())
 conf = Configure(env, custom_tests={'CheckCCFlag': CheckCCFlag})
 conf.env.Append(ENV={'PATH': os.environ['PATH']})
 for var in ['AR', 'AS', 'CC', 'CPP', 'CXX', 'LD', 'RANLIB']:
