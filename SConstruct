@@ -17,6 +17,14 @@ headers = [
     'stdlib.h',
 ]
 
+system_headers = {
+}
+
+libs = []
+
+system_libs = {
+}
+
 default_flags = {
     'CPPDEFINES': [
         ('_XOPEN_SOURCE', '500'),
@@ -31,12 +39,17 @@ default_flags = {
     ],
 }
 
+system_flags = {
+}
+
 debug_flags = {
     'CFLAGS': [
         '-g',
         '-O0',
     ],
 }
+
+sys = platform.system()
 
 
 def CheckCCFlag(ctx, flag):
@@ -84,12 +97,17 @@ for flags in ['CFLAGS', 'LINKFLAGS']:
 conf.env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
 if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
-if not conf.CheckLib('m'):
+if not all(map(conf.CheckCHeader, system_headers.get(sys, []))):
+    Exit(1)
+if not all(map(conf.CheckLib, libs)):
+    Exit(1)
+if not all(map(conf.CheckLib, system_libs.get(sys, []))):
     Exit(1)
 conf.env.MergeFlags({'CPPDEFINES': default_flags['CPPDEFINES']})
 for cflag in default_flags['CFLAGS']:
     if conf.CheckCCFlag(cflag):
         conf.env.Append(CFLAGS=[cflag])
+conf.env.MergeFlags(system_flags.get(sys, {}))
 env = conf.Finish()
 debug_env = env.Clone()
 debug_env.MergeFlags(debug_flags)
@@ -101,7 +119,8 @@ src = [
     'sum.c',
 ]
 
-libnu = env.SharedLibrary('nu', src, LIBS=[])
+libs = [] + system_libs.get(sys, [])
+libnu = env.SharedLibrary('nu', src, LIBS=libs)
 
 tests = [
     'test-amath',
@@ -120,7 +139,6 @@ Default(all)
 env.Alias('all', all)
 
 dir = os.path.abspath('.')
-sys = platform.system()
 if sys == 'Darwin':
     penv = {'DYLD_FALLBACK_LIBRARY_PATH': dir}
 else:
