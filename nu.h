@@ -28,6 +28,9 @@ void nu_array_log(float [], float [], size_t);
 void nu_array_sin(float [], float [], size_t);
 void nu_array_linspace(float [], float, float, size_t);
 
+int nu_clock_tick(uint64_t *);
+int nu_clock_tock(uint64_t *);
+
 struct nu_random_state {
     uint64_t s0;
     uint64_t s1;

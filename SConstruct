@@ -15,14 +15,19 @@ headers = [
     'stdint.h',
     'stdio.h',
     'stdlib.h',
+    'sys/types.h',
+    'time.h',
+    'unistd.h',
 ]
 
 system_headers = {
+    'Darwin': ['mach/mach_time.h'],
 }
 
 libs = []
 
 system_libs = {
+    'Linux': ['rt'],
 }
 
 default_flags = {
@@ -40,6 +45,11 @@ default_flags = {
 }
 
 system_flags = {
+    'Darwin': {
+        'CPPDEFINES': [
+            ('_DARWIN_C_SOURCE', '1'),
+        ],
+    },
 }
 
 debug_flags = {
@@ -115,6 +125,7 @@ debug_env.MergeFlags(debug_flags)
 src = [
     'amath.c',
     'array.c',
+    'clock.c',
     'random.c',
     'sum.c',
 ]
@@ -126,6 +137,7 @@ tests = [
     'test-amath',
     'test-array',
     'test-array-complex',
+    'test-clock',
     'test-random',
     'test-sum',
 ]
