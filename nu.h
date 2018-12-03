@@ -15,6 +15,8 @@ float nu_exp(float);
 float nu_log(float);
 float nu_sin(float);
 
+size_t nu_array_argmax(float [], size_t);
+size_t nu_array_argmin(float [], size_t);
 float nu_array_max(float [], size_t);
 float nu_array_min(float [], size_t);
 void nu_array_add(float [], float [], float [], size_t);

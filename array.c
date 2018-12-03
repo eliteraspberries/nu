@@ -9,30 +9,48 @@
 #include "log.h"
 #include "sin.h"
 
-float
-nu_array_max(float x[], size_t n)
+size_t
+nu_array_argmax(float x[], size_t n)
 {
     assert(n > 0);
     float max = x[0];
+    size_t j = 0;
     for (size_t i = 1; i < n; i++) {
         if (x[i] > max) {
             max = x[i];
+            j = i;
         }
     }
-    return max;
+    return j;
+}
+
+size_t
+nu_array_argmin(float x[], size_t n)
+{
+    assert(n > 0);
+    float min = x[0];
+    size_t j = 0;
+    for (size_t i = 1; i < n; i++) {
+        if (x[i] < min) {
+            min = x[i];
+            j = i;
+        }
+    }
+    return j;
+}
+
+float
+nu_array_max(float x[], size_t n)
+{
+    size_t i = nu_array_argmax(x, n);
+    return x[i];
 }
 
 float
 nu_array_min(float x[], size_t n)
 {
-    assert(n > 0);
-    float min = x[0];
-    for (size_t i = 1; i < n; i++) {
-        if (x[i] < min) {
-            min = x[i];
-        }
-    }
-    return min;
+    size_t i = nu_array_argmin(x, n);
+    return x[i];
 }
 
 void
