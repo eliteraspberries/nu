@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import functools
 import os
-import platform
+import re
 import subprocess
 
 
@@ -21,13 +21,12 @@ headers = [
 ]
 
 system_headers = {
-    'Darwin': ['mach/mach_time.h'],
+    'darwin': ['mach/mach_time.h'],
 }
 
 libs = []
 
 system_libs = {
-    'Linux': ['rt'],
 }
 
 default_flags = {
@@ -45,7 +44,7 @@ default_flags = {
 }
 
 system_flags = {
-    'Darwin': {
+    'darwin': {
         'CPPDEFINES': [
             ('_DARWIN_C_SOURCE', '1'),
         ],
@@ -58,8 +57,6 @@ debug_flags = {
         '-O0',
     ],
 }
-
-sys = os.environ.get('SYSTEM') or platform.system()
 
 
 def CheckCCFlag(ctx, flag):
@@ -94,17 +91,31 @@ def run(penv, target, source, env):
             Exit(1)
 
 
-env = Environment(ENV=os.environ, platform=sys.lower())
-conf = Configure(env, custom_tests={'CheckCCFlag': CheckCCFlag})
-conf.env.Append(ENV={'PATH': os.environ['PATH']})
+def dumpmachine(env):
+    output = subprocess.check_output([env['CC'], '-dumpmachine'])
+    target = output.rstrip('\n')
+    cpu, vendor, os = target.split('-', 2)
+    system = re.compile(r'([a-z]*)[-]?(.*)').match(os).group(1)
+    return (cpu, vendor, system)
+
+
+_, _, sys = dumpmachine(os.environ)
+try:
+    platform = Platform(sys)
+except:
+    platform = Platform('posix')
+env = Environment(ENV=os.environ, platform=platform)
+env.Append(ENV={'PATH': os.environ['PATH']})
 for var in ['AR', 'AS', 'CC', 'CPP', 'CXX', 'LD', 'RANLIB']:
     if var in os.environ:
-        conf.env.Replace(**{var: os.environ[var]})
+        env.Replace(**{var: os.environ[var]})
 for flags in ['CPPFLAGS', 'CFLAGS']:
-    conf.env.MergeFlags({flags: os.environ.get(flags, '').split()})
+    env.MergeFlags({flags: os.environ.get(flags, '').split()})
 for flags in ['CFLAGS', 'LINKFLAGS']:
-    conf.env.MergeFlags({flags: os.environ.get('ARCHFLAGS', '').split()})
-conf.env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
+    env.MergeFlags({flags: os.environ.get('ARCHFLAGS', '').split()})
+env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
+env.MergeFlags({'CPPDEFINES': default_flags['CPPDEFINES']})
+conf = Configure(env, custom_tests={'CheckCCFlag': CheckCCFlag})
 if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
 if not all(map(conf.CheckCHeader, system_headers.get(sys, []))):
@@ -113,7 +124,6 @@ if not all(map(conf.CheckLib, libs)):
     Exit(1)
 if not all(map(conf.CheckLib, system_libs.get(sys, []))):
     Exit(1)
-conf.env.MergeFlags({'CPPDEFINES': default_flags['CPPDEFINES']})
 for cflag in default_flags['CFLAGS']:
     if conf.CheckCCFlag(cflag):
         conf.env.Append(CFLAGS=[cflag])
@@ -151,7 +161,7 @@ Default(all)
 env.Alias('all', all)
 
 dir = os.path.abspath('.')
-if sys == 'Darwin':
+if sys == 'darwin':
     penv = {'DYLD_FALLBACK_LIBRARY_PATH': dir}
 else:
     penv = {'LD_LIBRARY_PATH': dir}
