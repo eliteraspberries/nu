@@ -32,7 +32,8 @@ system_libs = {
 
 default_flags = {
     'CPPDEFINES': [
-        ('_XOPEN_SOURCE', '500'),
+        ('_POSIX_C_SOURCE', '200112L'),
+        ('_XOPEN_SOURCE', '600'),
     ],
     'CFLAGS': [
         '-fno-fast-math',
