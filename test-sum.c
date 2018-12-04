@@ -18,7 +18,7 @@ main(void)
     float *z = NULL;
     error = 1e-5f;
     n = 1000;
-    z = calloc(n, sizeof(float));
+    z = nu_array_alloc(n, sizeof(float));
     assert(z != NULL);
     z[0] = 1.f;
     float d = 1.f;

@@ -19,7 +19,7 @@ main(void)
     float *y = NULL;
     struct nu_random_state r;
     n = 1000;
-    x = calloc(n, sizeof(float));
+    x = nu_array_alloc(n, sizeof(float));
     assert(x != NULL);
     nu_random_seed(&r, 0);
     nu_random_array_float(&r, x, n);
@@ -28,8 +28,8 @@ main(void)
     free(x);
     error = 1e-8f;
     n = 1000;
-    x = calloc(n, sizeof(float));
-    y = calloc(n, sizeof(float));
+    x = nu_array_alloc(n, sizeof(float));
+    y = nu_array_alloc(n, sizeof(float));
     assert(x != NULL);
     assert(y != NULL);
     nu_array_linspace(x, 0.f, 1.f, n);
@@ -43,11 +43,11 @@ main(void)
     float *theta = NULL;
     error = 1e-6f;
     n = 10000;
-    theta = calloc(n, sizeof(float));
+    theta = nu_array_alloc(n, sizeof(float));
     assert(theta != NULL);
     nu_array_linspace(theta, 0.f, 2.f * pi, n);
-    x = calloc(n, sizeof(float));
-    y = calloc(n, sizeof(float));
+    x = nu_array_alloc(n, sizeof(float));
+    y = nu_array_alloc(n, sizeof(float));
     assert(x != NULL);
     assert(y != NULL);
     nu_array_cos(x, theta, n);

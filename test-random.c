@@ -19,7 +19,7 @@ main(void)
     float *x = NULL;
     error = 1e-2f;
     n = 100000;
-    x = calloc(n, sizeof(float));
+    x = nu_array_alloc(n, sizeof(float));
     assert(x != NULL);
     nu_random_array_float(&s, x, n);
     meanvar = nu_meanvar(x, n);

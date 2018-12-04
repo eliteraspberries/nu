@@ -8,6 +8,7 @@ import subprocess
 
 headers = [
     'assert.h',
+    'errno.h',
     'float.h',
     'inttypes.h',
     'math.h',
@@ -21,7 +22,7 @@ headers = [
 ]
 
 system_headers = {
-    'darwin': ['mach/mach_time.h'],
+    'darwin': ['mach/mach_time.h', 'sys/sysctl.h'],
 }
 
 libs = []
@@ -116,6 +117,10 @@ for flags in ['CFLAGS', 'LINKFLAGS']:
 env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
 env.MergeFlags({'CPPDEFINES': default_flags['CPPDEFINES']})
 conf = Configure(env, custom_tests={'CheckCCFlag': CheckCCFlag})
+conf.env.MergeFlags(system_flags.get(sys, {}))
+for cflag in default_flags['CFLAGS']:
+    if conf.CheckCCFlag(cflag):
+        conf.env.Append(CFLAGS=[cflag])
 if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
 if not all(map(conf.CheckCHeader, system_headers.get(sys, []))):
@@ -124,10 +129,6 @@ if not all(map(conf.CheckLib, libs)):
     Exit(1)
 if not all(map(conf.CheckLib, system_libs.get(sys, []))):
     Exit(1)
-for cflag in default_flags['CFLAGS']:
-    if conf.CheckCCFlag(cflag):
-        conf.env.Append(CFLAGS=[cflag])
-conf.env.MergeFlags(system_flags.get(sys, {}))
 env = conf.Finish()
 debug_env = env.Clone()
 debug_env.MergeFlags(debug_flags)

@@ -22,9 +22,9 @@ main(void)
     nu_random_seed(&r, 0);
     error = 1e-6f;
     n = 1000;
-    x = calloc(n, sizeof(nu_complex));
-    y = calloc(n, sizeof(nu_complex));
-    z = calloc(n, sizeof(nu_complex));
+    x = nu_array_alloc(n, sizeof(nu_complex));
+    y = nu_array_alloc(n, sizeof(nu_complex));
+    z = nu_array_alloc(n, sizeof(nu_complex));
     assert(x != NULL);
     assert(y != NULL);
     assert(z != NULL);

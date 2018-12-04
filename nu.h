@@ -15,6 +15,7 @@ float nu_exp(float);
 float nu_log(float);
 float nu_sin(float);
 
+void *nu_array_alloc(size_t, size_t);
 size_t nu_array_argmax(float [], size_t);
 size_t nu_array_argmin(float [], size_t);
 float nu_array_max(float [], size_t);
