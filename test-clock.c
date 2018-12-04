@@ -13,11 +13,13 @@ int
 main(void)
 {
     uint64_t t;
-    for (size_t i = 0; i < 10; i++) {
-        nu_clock_tick(&t);
-        sleep(1);
-        nu_clock_tock(&t);
-        assert(t >= 1000000000UL);
-    }
+    nu_clock_tick(&t);
+    unsigned int n = 4;
+    unsigned int x = n;
+    do {
+        x = sleep(x);
+    } while (x > 0);
+    nu_clock_tock(&t);
+    assert(t >= n * 1000000000UL);
     return 0;
 }
