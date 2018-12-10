@@ -157,9 +157,9 @@ tests = [
 for i, test in enumerate(tests):
     tests[i] = debug_env.Program(test, [test + '.c'], LIBS=[libnu, 'm'])
 
-all = [libnu] + tests
+Default(libnu)
 
-Default(all)
+all = [libnu] + tests
 env.Alias('all', all)
 
 dir = os.path.abspath('.')
