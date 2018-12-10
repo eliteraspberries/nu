@@ -12,6 +12,7 @@
 int
 main(void)
 {
+    const uint64_t billion = 1000000000UL;
     uint64_t t;
     nu_clock_tick(&t);
     unsigned int n = 4;
@@ -20,6 +21,6 @@ main(void)
         x = sleep(x);
     } while (x > 0);
     nu_clock_tock(&t);
-    assert(t >= n * 1000000000UL);
+    assert(t / billion * billion == n * billion);
     return 0;
 }
