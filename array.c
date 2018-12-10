@@ -154,6 +154,12 @@ error:
     return NULL;
 }
 
+void
+nu_array_free(void *ptr)
+{
+    free(ptr);
+}
+
 size_t
 nu_array_argmax(float x[], size_t n)
 {
