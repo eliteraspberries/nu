@@ -149,10 +149,12 @@ nu_random_array(struct nu_random_state *state, uint64_t x[], size_t n)
 void
 nu_random_array_float(struct nu_random_state *state, float x[], size_t n)
 {
-    for (size_t i = 0; i < n / 2; i++) {
+    for (size_t i = 0; i < n - 1; i += 2) {
+        assert(i < n);
+        assert(i + 1 < n);
         nu_tuplefloat y = uint64totuplefloat(next(state));
-        x[2 * i] = y.a;
-        x[2 * i + 1] = y.b;
+        x[i] = y.a;
+        x[i + 1] = y.b;
     }
     if (n % 2 != 0) {
         nu_tuplefloat y = uint64totuplefloat(next(state));
@@ -181,11 +183,13 @@ nu_random_gauss(struct nu_random_state *state)
 void
 nu_random_array_gauss(struct nu_random_state *state, float x[], size_t n)
 {
-    for (size_t i = 0; i < n / 2; i++) {
+    for (size_t i = 0; i < n - 1; i += 2) {
+        assert(i < n);
+        assert(i + 1 < n);
         nu_tuplefloat y = uint64totuplefloat(next(state));
         nu_tuplefloat z = _nu_gauss(y);
-        x[2 * i] = z.a;
-        x[2 * i + 1] = z.b;
+        x[i] = z.a;
+        x[i + 1] = z.b;
     }
     if (n % 2 != 0) {
         nu_tuplefloat y = uint64totuplefloat(next(state));
