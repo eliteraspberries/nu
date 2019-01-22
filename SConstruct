@@ -94,7 +94,7 @@ def run(penv, target, source, env):
 
 
 def dumpmachine(env):
-    output = subprocess.check_output([env['CC'], '-dumpmachine'])
+    output = subprocess.check_output([env.get('CC', 'cc'), '-dumpmachine'])
     target = output.rstrip('\n')
     cpu, vendor, os = target.split('-', 2)
     system = re.compile(r'([a-z]*)[-]?(.*)').match(os).group(1)
