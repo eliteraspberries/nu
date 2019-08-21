@@ -9,9 +9,11 @@ addons:
   apt:
     packages:
       - scons
+    update: true
   homebrew:
     packages:
       - scons
+    update: true
 script:
   - scons check
 after_failure:
