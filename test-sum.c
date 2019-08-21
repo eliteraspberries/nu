@@ -46,5 +46,29 @@ main(void)
     sum = 4.f * nu_sum_sum(&s);
     assert(nu_eq(sum, pi, error));
 
+    error = 1e-6f;
+    n = 1000;
+    float *x;
+    float *y;
+    float dot;
+    x = nu_array_alloc(n, sizeof(float));
+    y = nu_array_alloc(n, sizeof(float));
+    assert(x != NULL);
+    assert(y != NULL);
+    nu_array_linspace(x, 0.f, 1.f, n);
+    for (size_t i = 0; i < n; i++) {
+        y[i] = 0.f;
+    }
+    dot = nu_dot(x, y, n);
+    assert(nu_eq(dot, 0.f, error));
+    for (size_t i = 0; i < n; i++) {
+        y[i] = 1.f;
+    }
+    sum = nu_sum(x, n);
+    dot = nu_dot(x, y, n);
+    assert(nu_eq(dot, sum, error));
+    free(x);
+    free(y);
+
     return 0;
 }

@@ -162,6 +162,12 @@ nu_sum(const float x[], size_t n)
 }
 
 float
+nu_dot(const float x[], const float y[], size_t n)
+{
+    return _nu_dot(x, y, n);
+}
+
+float
 nu_sumsqr(const float x[], size_t n)
 {
     return _nu_sumsqr(x, n);
