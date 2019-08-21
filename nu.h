@@ -69,6 +69,7 @@ void nu_sum_init(struct nu_sum_state *);
 void nu_sum_add(struct nu_sum_state *, float);
 float nu_sum_sum(struct nu_sum_state *);
 float nu_sum(const float [], size_t);
+float nu_sumsqr(const float [], size_t);
 nu_tuplefloat nu_meanvar(const float [], size_t);
 
 #endif
