@@ -1,4 +1,4 @@
-/* Copyright 2014-2018, Mansour Moufid <mansourmoufid@gmail.com> */
+/* Copyright 2014-2019, Mansour Moufid <mansourmoufid@gmail.com> */
 
 #include <assert.h>
 #include <errno.h>
@@ -161,7 +161,7 @@ nu_array_free(void *ptr)
 }
 
 size_t
-nu_array_argmax(float x[], size_t n)
+nu_array_argmax(const float x[], size_t n)
 {
     assert(n > 0);
     float max = x[0];
@@ -176,7 +176,7 @@ nu_array_argmax(float x[], size_t n)
 }
 
 size_t
-nu_array_argmin(float x[], size_t n)
+nu_array_argmin(const float x[], size_t n)
 {
     assert(n > 0);
     float min = x[0];
@@ -191,21 +191,21 @@ nu_array_argmin(float x[], size_t n)
 }
 
 float
-nu_array_max(float x[], size_t n)
+nu_array_max(const float x[], size_t n)
 {
     size_t i = nu_array_argmax(x, n);
     return x[i];
 }
 
 float
-nu_array_min(float x[], size_t n)
+nu_array_min(const float x[], size_t n)
 {
     size_t i = nu_array_argmin(x, n);
     return x[i];
 }
 
 void
-nu_array_add(float z[], float x[], float y[], size_t n)
+nu_array_add(float z[], const float x[], const float y[], size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = x[i] + y[i];
@@ -213,7 +213,7 @@ nu_array_add(float z[], float x[], float y[], size_t n)
 }
 
 void
-nu_array_mul(float z[], float x[], float y[], size_t n)
+nu_array_mul(float z[], const float x[], const float y[], size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = x[i] * y[i];
@@ -227,7 +227,12 @@ _nu_cadd(nu_complex x, nu_complex y)
 }
 
 void
-nu_array_cadd(nu_complex z[], nu_complex x[], nu_complex y[], size_t n)
+nu_array_cadd(
+    nu_complex z[],
+    const nu_complex x[],
+    const nu_complex y[],
+    size_t n
+)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = _nu_cadd(x[i], y[i]);
@@ -244,7 +249,12 @@ _nu_cmul(nu_complex x, nu_complex y)
 }
 
 void
-nu_array_cmul(nu_complex z[], nu_complex x[], nu_complex y[], size_t n)
+nu_array_cmul(
+    nu_complex z[],
+    const nu_complex x[],
+    const nu_complex y[],
+    size_t n
+)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = _nu_cmul(x[i], y[i]);
@@ -258,7 +268,7 @@ _nu_conj(nu_complex x)
 }
 
 void
-nu_array_conj(nu_complex z[], nu_complex x[], size_t n)
+nu_array_conj(nu_complex z[], const nu_complex x[], size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = _nu_conj(x[i]);
@@ -266,7 +276,7 @@ nu_array_conj(nu_complex z[], nu_complex x[], size_t n)
 }
 
 void
-nu_array_cos(float z[], float x[], size_t n)
+nu_array_cos(float z[], const float x[], size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = _nu_cos(x[i]);
@@ -274,7 +284,7 @@ nu_array_cos(float z[], float x[], size_t n)
 }
 
 void
-nu_array_exp(float z[], float x[], size_t n)
+nu_array_exp(float z[], const float x[], size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = _nu_exp(x[i]);
@@ -282,7 +292,7 @@ nu_array_exp(float z[], float x[], size_t n)
 }
 
 void
-nu_array_log(float z[], float x[], size_t n)
+nu_array_log(float z[], const float x[], size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = _nu_log(x[i]);
@@ -290,7 +300,7 @@ nu_array_log(float z[], float x[], size_t n)
 }
 
 void
-nu_array_sin(float z[], float x[], size_t n)
+nu_array_sin(float z[], const float x[], size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         z[i] = _nu_sin(x[i]);

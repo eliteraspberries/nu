@@ -1,4 +1,4 @@
-/* Copyright 2018, Mansour Moufid <mansourmoufid@gmail.com> */
+/* Copyright 2018, 2019, Mansour Moufid <mansourmoufid@gmail.com> */
 
 #include <assert.h>
 #include <stddef.h>
@@ -155,7 +155,7 @@ nu_sum_sum(struct nu_sum_state *state)
 }
 
 float
-nu_sum(float x[], size_t n)
+nu_sum(const float x[], size_t n)
 {
     struct nu_sum_state state;
     nu_sum_init(&state);
@@ -166,7 +166,7 @@ nu_sum(float x[], size_t n)
 }
 
 nu_tuplefloat
-nu_meanvar(float x[], size_t n)
+nu_meanvar(const float x[], size_t n)
 {
     struct nu_sum_state sumx_state;
     struct nu_sum_state sumx2_state;

@@ -1,4 +1,4 @@
-/* Copyright 2018, Mansour Moufid <mansourmoufid@gmail.com> */
+/* Copyright 2018, 2019, Mansour Moufid <mansourmoufid@gmail.com> */
 
 #include <assert.h>
 #include <stddef.h>
@@ -21,7 +21,7 @@ split64(uint64_t x)
 #define C3 4944592307816406286ULL
 
 void
-nu_random_seed256(struct nu_random_state *state, uint64_t seed[4])
+nu_random_seed256(struct nu_random_state *state, const uint64_t seed[4])
 {
     state->s0 = C0;
     state->s1 = C1;
