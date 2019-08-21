@@ -76,6 +76,7 @@ def CheckCCFlag(ctx, flag):
 
 
 def run(penv, target, source, env):
+    ok = True
     tgt = filename(target).pop()
     for src in filename(source):
         print(os.path.basename(src), end='... ')
@@ -92,7 +93,9 @@ def run(penv, target, source, env):
             print('pass')
         else:
             print('fail')
-            Exit(1)
+            ok = False
+    if not ok:
+        Exit(1)
 
 
 def dumpmachine(env):
