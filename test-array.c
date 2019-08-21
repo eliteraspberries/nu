@@ -10,6 +10,8 @@
 #include "nu.h"
 #include "test.h"
 
+static const float pi = (float) M_PI;
+
 int
 main(void)
 {
@@ -42,7 +44,6 @@ main(void)
     free(x);
     free(y);
 
-    const float pi = (float) M_PI;
     float *theta = NULL;
     error = 1e-6f;
     n = 10000;

@@ -9,7 +9,7 @@
 static inline float
 __nu_cos(float x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     const float  a2 = -0.4999999963f;
     const float  a4 =  0.0416666418f;
     const float  a6 = -0.0013888397f;
@@ -27,7 +27,7 @@ __nu_cos(float x)
 static inline float
 _nu_cos(float x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     if (x >= 0.f) {
         if (x <= 0.5f * pi) {
             return __nu_cos(x);

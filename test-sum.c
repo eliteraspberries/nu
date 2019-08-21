@@ -3,15 +3,18 @@
 #undef NDEBUG
 
 #include <assert.h>
+#include <math.h>
 #include <stdlib.h>
 
 #include "nu.h"
 #include "test.h"
 
+static const float e = (float) M_E;
+static const float pi = (float) M_PI;
+
 int
 main(void)
 {
-    const float e = 2.71828182f;
     float error;
     size_t n;
     float sum;
@@ -31,7 +34,6 @@ main(void)
     assert(nu_eq(sum, e, error));
     free(z);
 
-    const float pi = 3.14159265f;
     struct nu_sum_state s;
     nu_sum_init(&s);
     n = 1000000;

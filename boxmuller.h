@@ -11,7 +11,7 @@
 static inline float
 __nu_cos(float x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     const float a2 = -0.49670f;
     const float a4 =  0.03705f;
     assert(x >= 0.f && x <= 0.5f * pi);
@@ -23,7 +23,7 @@ __nu_cos(float x)
 static inline float
 _nu_cos(float x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     assert(x >= 0.f && x <= 2.f * pi);
     if (x <= 0.5f * pi) {
         return __nu_cos(x);
@@ -37,7 +37,7 @@ _nu_cos(float x)
 static inline float
 __nu_exp(float x)
 {
-    const float ln2 = (float) M_LN2;
+    static const float ln2 = (float) M_LN2;
     const float a1 = -0.9998684f;
     const float a2 =  0.4982926f;
     const float a3 = -0.1595332f;
@@ -54,7 +54,7 @@ __nu_exp(float x)
 static inline float
 _nu_exp(float x)
 {
-    const float ln2 = (float) M_LN2;
+    static const float ln2 = (float) M_LN2;
     if (x >= 0.f) {
         if (x <= ln2) {
             return __nu_exp(x);
@@ -86,7 +86,7 @@ __nu_log(float x)
 static inline float
 _nu_log(float x)
 {
-    const float log2 = (float) M_LN2;
+    static const float log2 = (float) M_LN2;
     assert(x >= 0.f);
     if (x > 0.f) {
         if (x < 1.f) {
@@ -104,7 +104,7 @@ _nu_log(float x)
 static inline float
 __nu_sin(float x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     const float a2 = -0.16605f;
     const float a4 =  0.00761f;
     assert(x >= 0.f && x <= 0.5f * pi);
@@ -116,7 +116,7 @@ __nu_sin(float x)
 static inline float
 _nu_sin(float x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     assert(x >= 0.f && x <= 2.f * pi);
     if (x <= 0.5f * pi) {
         return x * __nu_sin(x);
@@ -143,7 +143,7 @@ _nu_sqrt(float x)
 static inline nu_tuplefloat
 _nu_boxmuller(nu_tuplefloat x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     const float u1 = x.a;
     const float u2 = x.b;
     assert(u1 > 0.f && u1 <= 1.f);

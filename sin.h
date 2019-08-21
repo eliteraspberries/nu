@@ -9,7 +9,7 @@
 static inline float
 __nu_sin(float x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     const float  a2 = -0.1666666664f;
     const float  a4 =  0.0083333315f;
     const float  a6 = -0.0001984090f;
@@ -27,7 +27,7 @@ __nu_sin(float x)
 static inline float
 _nu_sin(float x)
 {
-    const float pi = (float) M_PI;
+    static const float pi = (float) M_PI;
     if (x >= 0.f) {
         if (x <= 0.5f * pi) {
             return x * __nu_sin(x);
