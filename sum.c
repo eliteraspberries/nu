@@ -170,6 +170,7 @@ nu_sumsqr(const float x[], size_t n)
 nu_tuplefloat
 nu_meanvar(const float x[], size_t n)
 {
+    assert(n > 0);
     float sumx = _nu_sum(x, n);
     float sumx2 = _nu_sumsqr(x, n);
     float mean = sumx / n;

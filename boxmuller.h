@@ -1,4 +1,4 @@
-/* Copyright 2018, Mansour Moufid <mansourmoufid@gmail.com> */
+/* Copyright 2018, 2019, Mansour Moufid <mansourmoufid@gmail.com> */
 
 #ifndef NU_BOXMULLER_H
 #define NU_BOXMULLER_H
@@ -47,6 +47,7 @@ __nu_exp(float x)
     float x3 = x2 * x;
     float x4 = x3 * x;
     float e = 1.f + a1 * x + a2 * x2 + a3 * x3 + a4 * x4;
+    assert(e > 0.f);
     return 1.f / e;
 }
 
@@ -133,6 +134,7 @@ _nu_sqrt(float x)
         return 0.f;
     }
     float z = _nu_exp(0.5f * _nu_log(x));
+    assert(z > 0.f);
     z = 0.5f * (z + x / z);
     z = 0.5f * (z + x / z);
     return z;
