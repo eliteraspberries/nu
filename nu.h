@@ -73,4 +73,7 @@ float nu_dot(const float [], const float [], size_t);
 float nu_sumsqr(const float [], size_t);
 nu_tuplefloat nu_meanvar(const float [], size_t);
 
+extern const size_t nu_diff_kmax;
+void nu_diff(float, size_t, float [], const float [], size_t);
+
 #endif

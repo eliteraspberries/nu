@@ -4,6 +4,7 @@ import functools
 import os
 import re
 import subprocess
+import sys
 
 
 def filename(x):
@@ -106,6 +107,25 @@ def dumpmachine(env):
     return (cpu, vendor, system)
 
 
+def generate(target, source, env):
+    tgt = filename(target).pop()
+    src = filename(source).pop()
+    name, ext = os.path.splitext(os.path.basename(tgt))
+    print(name, tgt, src)
+    with open(tgt, 'w') as t:
+        with open(src, 'r') as s:
+            p = subprocess.Popen(
+                [sys.executable, name + '.py'],
+                stderr=sys.stderr,
+                stdin=s,
+                stdout=t,
+            )
+            p.wait()
+    return None
+
+
+generator = Builder(action=generate)
+
 _, _, system = dumpmachine(os.environ)
 try:
     platform = Platform(system)
@@ -116,6 +136,7 @@ environment = {
     'platform': platform,
 }
 env = Environment(**environment)
+env.Append(BUILDERS={'Generate': generator})
 env.Append(ENV={'PATH': os.environ['PATH']})
 for var in ['AR', 'AS', 'CC', 'CPP', 'CXX', 'LD', 'RANLIB']:
     if var in os.environ:
@@ -143,10 +164,13 @@ env = conf.Finish()
 debug_env = env.Clone()
 debug_env.MergeFlags(debug_flags)
 
+env.Depends('diff.c', ['diff.py', 'diff.c.in'])
+
 src = [
     'amath.c',
     'array.c',
     'clock.c',
+    env.Generate('diff.c', 'diff.c.in'),
     'random.c',
     'sum.c',
 ]
@@ -159,6 +183,7 @@ tests = [
     'test-array',
     'test-array-complex',
     'test-clock',
+    'test-diff',
     'test-random',
     'test-sum',
 ]

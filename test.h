@@ -15,4 +15,15 @@ nu_eq(float a, float b, float e)
     }
 }
 
+static inline int
+nu_array_eq(const float x[], const float y[], size_t n, float e)
+{
+    for (size_t i = 0; i < n; i++) {
+        if (!nu_eq(x[i], y[i], e)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 #endif
