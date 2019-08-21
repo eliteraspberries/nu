@@ -6,6 +6,10 @@ import re
 import subprocess
 
 
+def filename(x):
+    return [str(f.abspath) for f in x]
+
+
 headers = [
     'assert.h',
     'errno.h',
@@ -27,8 +31,7 @@ system_headers = {
 
 libs = []
 
-system_libs = {
-}
+system_libs = {}
 
 default_flags = {
     'CPPDEFINES': [
@@ -73,9 +76,8 @@ def CheckCCFlag(ctx, flag):
 
 
 def run(penv, target, source, env):
-    tgt = str(target.pop().abspath)
-    for src in source:
-        src = str(src.abspath)
+    tgt = filename(target).pop()
+    for src in filename(source):
         print(os.path.basename(src), end='... ')
         with open(tgt, 'w+') as log:
             p = subprocess.Popen(
@@ -101,12 +103,16 @@ def dumpmachine(env):
     return (cpu, vendor, system)
 
 
-_, _, sys = dumpmachine(os.environ)
+_, _, system = dumpmachine(os.environ)
 try:
-    platform = Platform(sys)
+    platform = Platform(system)
 except:
     platform = Platform('posix')
-env = Environment(ENV=os.environ, platform=platform)
+environment = {
+    'ENV': os.environ,
+    'platform': platform,
+}
+env = Environment(**environment)
 env.Append(ENV={'PATH': os.environ['PATH']})
 for var in ['AR', 'AS', 'CC', 'CPP', 'CXX', 'LD', 'RANLIB']:
     if var in os.environ:
@@ -118,17 +124,17 @@ for flags in ['CFLAGS', 'LINKFLAGS']:
 env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
 env.MergeFlags({'CPPDEFINES': default_flags['CPPDEFINES']})
 conf = Configure(env, custom_tests={'CheckCCFlag': CheckCCFlag})
-conf.env.MergeFlags(system_flags.get(sys, {}))
+conf.env.MergeFlags(system_flags.get(system, {}))
 for cflag in default_flags['CFLAGS']:
     if conf.CheckCCFlag(cflag):
         conf.env.Append(CFLAGS=[cflag])
 if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
-if not all(map(conf.CheckCHeader, system_headers.get(sys, []))):
+if not all(map(conf.CheckCHeader, system_headers.get(system, []))):
     Exit(1)
 if not all(map(conf.CheckLib, libs)):
     Exit(1)
-if not all(map(conf.CheckLib, system_libs.get(sys, []))):
+if not all(map(conf.CheckLib, system_libs.get(system, []))):
     Exit(1)
 env = conf.Finish()
 debug_env = env.Clone()
@@ -142,7 +148,7 @@ src = [
     'sum.c',
 ]
 
-libs = [] + system_libs.get(sys, [])
+libs = [] + system_libs.get(system, [])
 libnu = env.SharedLibrary('nu', src, LIBS=libs)
 
 tests = [
@@ -163,7 +169,7 @@ all = [libnu] + tests
 env.Alias('all', all)
 
 dir = os.path.abspath('.')
-if sys == 'darwin':
+if system == 'darwin':
     penv = {'DYLD_FALLBACK_LIBRARY_PATH': dir}
 else:
     penv = {'LD_LIBRARY_PATH': dir}
