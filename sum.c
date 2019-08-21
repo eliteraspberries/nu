@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 #include "nu.h"
+#include "sum.h"
 
 static const float ws[] = {
     0x1p-128, 0x1p-127, 0x1p-126, 0x1p-125, 
@@ -157,26 +158,18 @@ nu_sum_sum(struct nu_sum_state *state)
 float
 nu_sum(const float x[], size_t n)
 {
-    struct nu_sum_state state;
-    nu_sum_init(&state);
-    for (size_t i = 0; i < n; i++) {
-        nu_sum_add(&state, x[i]);
-    }
-    return nu_sum_sum(&state);
+    return _nu_sum(x, n);
 }
 
 nu_tuplefloat
 nu_meanvar(const float x[], size_t n)
 {
-    struct nu_sum_state sumx_state;
     struct nu_sum_state sumx2_state;
-    nu_sum_init(&sumx_state);
     nu_sum_init(&sumx2_state);
     for (size_t i = 0; i < n; i++) {
-        nu_sum_add(&sumx_state, x[i]);
         nu_sum_add(&sumx2_state, x[i] * x[i]);
     }
-    float sumx = nu_sum_sum(&sumx_state);
+    float sumx = _nu_sum(x, n);
     float sumx2 = nu_sum_sum(&sumx2_state);
     float mean = sumx / n;
     float var = (sumx2 - mean * sumx) / n;
