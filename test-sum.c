@@ -16,6 +16,7 @@ main(void)
     size_t n;
     float sum;
     float *z = NULL;
+
     error = 1e-5f;
     n = 1000;
     z = nu_array_alloc(n, sizeof(float));
@@ -27,8 +28,9 @@ main(void)
         z[i] = 1.f / d;
     }
     sum = nu_sum(z, n);
-    free(z);
     assert(nu_eq(sum, e, error));
+    free(z);
+
     const float pi = 3.14159265f;
     struct nu_sum_state s;
     nu_sum_init(&s);
@@ -43,5 +45,6 @@ main(void)
     }
     sum = 4.f * nu_sum_sum(&s);
     assert(nu_eq(sum, pi, error));
+
     return 0;
 }

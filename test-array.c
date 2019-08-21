@@ -18,6 +18,7 @@ main(void)
     float *x = NULL;
     float *y = NULL;
     struct nu_random_state r;
+
     n = 1000;
     x = nu_array_alloc(n, sizeof(float));
     assert(x != NULL);
@@ -26,6 +27,7 @@ main(void)
     assert(nu_array_max(x, n) >= nu_array_min(x, n));
     assert(nu_array_min(x, n) <= nu_array_max(x, n));
     free(x);
+
     error = 1e-8f;
     n = 1000;
     x = nu_array_alloc(n, sizeof(float));
@@ -39,6 +41,7 @@ main(void)
     }
     free(x);
     free(y);
+
     const float pi = (float) M_PI;
     float *theta = NULL;
     error = 1e-6f;
@@ -60,5 +63,6 @@ main(void)
     free(theta);
     free(x);
     free(y);
+
     return 0;
 }

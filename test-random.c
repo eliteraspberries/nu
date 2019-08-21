@@ -17,6 +17,7 @@ main(void)
     size_t n;
     struct nu_random_state s;
     float *x = NULL;
+
     error = 1e-2f;
     n = 100000;
     x = nu_array_alloc(n, sizeof(float));
@@ -27,10 +28,12 @@ main(void)
     var = meanvar.b;
     assert(nu_eq(mean, 0.50000f, error));
     assert(nu_eq(var, 0.08333f, error));
+
     nu_random_array_gauss(&s, x, n);
     meanvar = nu_meanvar(x, n);
     mean = meanvar.a;
     assert(nu_eq(mean, 0.f, error));
     free(x);
+
     return 0;
 }
