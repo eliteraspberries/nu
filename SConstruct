@@ -110,8 +110,9 @@ def dumpmachine(env):
 def generate(target, source, env):
     tgt = filename(target).pop()
     src = filename(source).pop()
+    if os.path.exists(tgt) and os.path.getmtime(tgt) >= os.path.getmtime(src):
+        return None
     name, ext = os.path.splitext(os.path.basename(tgt))
-    print(name, tgt, src)
     with open(tgt, 'w') as t:
         with open(src, 'r') as s:
             p = subprocess.Popen(
