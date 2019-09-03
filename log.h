@@ -7,6 +7,8 @@
 #include <float.h>
 #include <math.h>
 
+#pragma STDC FP_CONTRACT ON
+
 static inline float
 __nu_log(float x)
 {

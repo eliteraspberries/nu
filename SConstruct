@@ -40,6 +40,7 @@ default_flags = {
         ('_XOPEN_SOURCE', '600'),
     ],
     'CFLAGS': [
+        '-ffp-contract=on',
         '-fno-fast-math',
         '-fpic',
         '-std=c99',

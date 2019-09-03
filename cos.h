@@ -6,6 +6,8 @@
 #include <assert.h>
 #include <math.h>
 
+#pragma STDC FP_CONTRACT ON
+
 static inline float
 __nu_cos(float x)
 {
