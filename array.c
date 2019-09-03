@@ -22,7 +22,7 @@ static int
 cache_line_size_linux(size_t *cls)
 {
     long int _cls;
-    if ((_cls = sysconf(_SC_LEVEL1_DCACHE_LINESIZE)) < 0) {
+    if ((_cls = sysconf(_SC_LEVEL1_DCACHE_LINESIZE)) <= 0) {
         return 1;
     }
     *cls = (size_t) _cls;
