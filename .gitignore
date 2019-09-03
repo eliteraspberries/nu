@@ -5,3 +5,5 @@ config.log
 *.os
 *.so
 *.dSYM
+*.tar
+*.gz
