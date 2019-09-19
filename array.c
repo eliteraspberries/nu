@@ -17,18 +17,19 @@
 
 #include "nu.h"
 
-#if defined(__linux__)
 static int
-cache_line_size_linux(size_t *cls)
+cache_line_size_posix(size_t *cls)
 {
-    long int _cls;
-    if ((_cls = sysconf(_SC_LEVEL1_DCACHE_LINESIZE)) <= 0) {
+    long int _cls = -1;
+#if defined(_SC_LEVEL1_DCACHE_LINESIZE)
+    _cls = sysconf(_SC_LEVEL1_DCACHE_LINESIZE);
+#endif
+    if (_cls <= 0) {
         return 1;
     }
     *cls = (size_t) _cls;
     return 0;
 }
-#endif
 
 #if defined(__APPLE__) && defined(__MACH__)
 static int
@@ -44,55 +45,56 @@ cache_line_size_darwin(size_t *cls)
 }
 #endif
 
-static int (*const get_cache_line_size)(size_t *) =
-#if defined(__linux__)
-    cache_line_size_linux;
-#elif defined(__APPLE__) && defined(__MACH__)
-    cache_line_size_darwin;
-#else
-    NULL;
+static int (*const cache_line_size_fns[])(size_t *) = {
+#if defined(__APPLE__) && defined(__MACH__)
+    &cache_line_size_darwin,
 #endif
+    &cache_line_size_posix,
+    NULL,
+};
 
 static size_t
 cache_line_size(void)
 {
+    const size_t n = sizeof(cache_line_size_fns) / sizeof(int (*)(size_t *));
     static size_t cls = 0;
     if (cls == 0) {
-        if (get_cache_line_size == NULL ||
-            (*get_cache_line_size)(&cls) != 0) {
-            cls = 64;
+        for (size_t i = 0; i < n; i++) {
+            int (*cache_line_size_fn)(size_t *) = cache_line_size_fns[i];
+            if (cache_line_size_fn == NULL) {
+                break;
+            }
+            if ((*cache_line_size_fn)(&cls) == 0) {
+                return cls;
+            }
         }
     }
+    cls = 64;
     return cls;
 }
 
-#if defined(_POSIX_C_SOURCE)
 static int
 page_size_posix(size_t *ps)
 {
-    long int _ps;
-    if ((_ps = sysconf(_SC_PAGESIZE)) < 0) {
+    long int _ps = -1;
+#if defined(_SC_PAGESIZE)
+    _ps = sysconf(_SC_PAGESIZE);
+#endif
+    if (_ps < 0) {
         return 1;
     }
     *ps = (size_t) _ps;
     return 0;
 }
-#endif
 
-static int (*const get_page_size)(size_t *) =
-#if defined(_POSIX_C_SOURCE)
-    page_size_posix;
-#else
-    NULL;
-#endif
+static int (*const get_page_size)(size_t *) = &page_size_posix;
 
 static size_t
 page_size(void)
 {
     static size_t ps = 0;
     if (ps == 0) {
-        if (get_page_size == NULL ||
-            (*get_page_size)(&ps) != 0) {
+        if ((*get_page_size)(&ps) != 0) {
             ps = 4096;
         }
     }
