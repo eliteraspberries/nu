@@ -30,9 +30,11 @@ system_headers = {
     'darwin': ['mach/mach_time.h', 'sys/sysctl.h'],
 }
 
-libs = []
+libs = ['m']
 
-system_libs = {}
+system_libs = {
+    'gnu': ['rt'],
+}
 
 default_flags = {
     'CPPDEFINES': [
@@ -179,10 +181,13 @@ if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
 if not all(map(conf.CheckCHeader, system_headers.get(system, []))):
     Exit(1)
-if not all(map(conf.CheckLib, libs)):
-    Exit(1)
-if not all(map(conf.CheckLib, system_libs.get(system, []))):
-    Exit(1)
+for i, lib in enumerate(libs):
+    if not conf.CheckLib(lib):
+        del libs[i]
+for lib in system_libs.get(system, []):
+    if conf.CheckLib(lib):
+        libs.append(lib)
+conf.env.Append(LIBS=libs)
 env = conf.Finish()
 debug_env = env.Clone()
 debug_env.MergeFlags(debug_flags)
@@ -198,8 +203,7 @@ src = [
     'sum.c',
 ]
 
-libs = [] + system_libs.get(system, [])
-libnu = env.SharedLibrary('nu', src, LIBS=libs)
+libnu = env.SharedLibrary('nu', src)
 
 tests = [
     'test-amath',
