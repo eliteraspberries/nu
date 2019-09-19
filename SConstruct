@@ -3,6 +3,7 @@ from __future__ import print_function
 import functools
 import os
 import re
+import string
 import subprocess
 import sys
 
@@ -35,6 +36,13 @@ libs = ['m']
 system_libs = {
     'gnu': ['rt'],
 }
+
+functions = [
+    (
+        ('clock_gettime', 'clock_gettime(0, NULL);', ['time.h'], []),
+        ('CLOCK_GETTIME', 1),
+    ),
+]
 
 default_flags = {
     'CPPDEFINES': [
@@ -74,7 +82,29 @@ def CheckCCFlag(ctx, flag):
     cflags = ctx.env['CFLAGS']
     ctx.env.Append(CFLAGS=[flag])
     result = ctx.TryCompile(src, '.c')
-    ctx.env.Replace(CFLAGS=cflags)
+    ctx.env['CFLAGS'].remove(flag)
+    ctx.Result(result)
+    return result
+
+
+def CheckFunction(ctx, function, statements, headers, libs):
+    includes = '\n'.join(['#include <{}>'.format(h) for h in headers])
+    main = '''
+        $includes
+        int main(void) {
+            $statements
+            return 0;
+        }
+    '''
+    src = string.Template(main).substitute({
+        'includes': includes,
+        'statements': statements,
+    })
+    ctx.Message('Checking function ' + function + '()... ')
+    ctx.env.Append(LIBS=libs)
+    result = ctx.TryLink(src, '.c')
+    for lib in libs:
+        ctx.env['LIBS'].remove(lib)
     ctx.Result(result)
     return result
 
@@ -172,7 +202,13 @@ for flags in ['CFLAGS', 'LINKFLAGS']:
     env.MergeFlags({flags: os.environ.get('ARCHFLAGS', '').split()})
 env.MergeFlags({'LINKFLAGS': os.environ.get('LDFLAGS', '').split()})
 env.MergeFlags({'CPPDEFINES': default_flags['CPPDEFINES']})
-conf = Configure(env, custom_tests={'CheckCCFlag': CheckCCFlag})
+conf = Configure(
+    env,
+    custom_tests={
+        'CheckCCFlag': CheckCCFlag,
+        'CheckFunction': CheckFunction,
+    }
+)
 conf.env.MergeFlags(system_flags.get(system, {}))
 for cflag in default_flags['CFLAGS']:
     if conf.CheckCCFlag(cflag):
@@ -188,6 +224,9 @@ for lib in system_libs.get(system, []):
     if conf.CheckLib(lib):
         libs.append(lib)
 conf.env.Append(LIBS=libs)
+for check, define in functions:
+    if conf.CheckFunction(*check):
+        conf.env.MergeFlags({'CPPDEFINES': define})
 env = conf.Finish()
 debug_env = env.Clone()
 debug_env.MergeFlags(debug_flags)

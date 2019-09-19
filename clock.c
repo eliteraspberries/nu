@@ -11,7 +11,7 @@
 
 #include "nu.h"
 
-#if defined(CLOCK_REALTIME)
+#if defined(CLOCK_GETTIME)
 static const clockid_t clock_ids[] = {
 #if defined(CLOCK_MONOTONIC_RAW)
     CLOCK_MONOTONIC_RAW,
@@ -23,7 +23,7 @@ static const clockid_t clock_ids[] = {
 };
 static const size_t n_clock_ids = sizeof(clock_ids) / sizeof(clockid_t);
 static int
-clock_init(uint64_t *timer)
+clock_init_gettime(uint64_t *timer)
 {
     struct timespec ts;
     assert(timer != NULL);
@@ -35,7 +35,7 @@ clock_init(uint64_t *timer)
     return 1;
 ok:
     *timer = (uint64_t) ts.tv_sec;
-    *timer *= 1000000000;
+    *timer *= 1000UL * 1000 * 1000;
     *timer += (uint64_t) ts.tv_nsec;
     return 0;
 }
@@ -59,15 +59,27 @@ clock_init_mach(uint64_t *timer)
 }
 #endif
 
+static int (*const clock_init_fns[])(uint64_t *timer) = {
+#if defined(__APPLE__) && defined(__MACH__)
+    &clock_init_mach,
+#endif
+#if defined(CLOCK_GETTIME)
+    &clock_init_gettime,
+#endif
+    NULL,
+};
+
 int
 nu_clock_tick(uint64_t *timer)
 {
-#if defined(__APPLE__) && defined(__MACH__)
-    return clock_init_mach(timer);
-#endif
-#if defined(CLOCK_REALTIME)
-    return clock_init(timer);
-#endif
+    const size_t n = sizeof(clock_init_fns) / sizeof(int (*)(uint64_t *));
+    for (size_t i = 0; i < n; i++) {
+        int (*clock_init_fn)(uint64_t *) = clock_init_fns[i];
+        if (clock_init_fn == NULL) {
+            break;
+        }
+        return clock_init_fn(timer);
+    }
     return 1;
 }
 

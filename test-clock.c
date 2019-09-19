@@ -9,12 +9,12 @@
 
 #include "nu.h"
 
-static const uint64_t billion = 1000000000UL;
+static const uint64_t billion = 1000UL * 1000 * 1000;
 
 int
 main(void)
 {
-    uint64_t t;
+    uint64_t t = 0;
     nu_clock_tick(&t);
     unsigned int n = 4;
     unsigned int x = n;
