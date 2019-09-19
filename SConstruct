@@ -77,23 +77,29 @@ def CheckCCFlag(ctx, flag):
     return result
 
 
-def run(penv, target, source, env):
+def run(target, source, env):
+    cwd = os.getcwd()
+    if system == 'darwin':
+        penv = {'DYLD_FALLBACK_LIBRARY_PATH': cwd}
+    else:
+        penv = {'LD_LIBRARY_PATH': cwd}
     ok = True
     tgt = filename(target).pop()
     for src in filename(source):
         print(os.path.basename(src), end='... ')
-        with open(tgt, 'w+') as log:
-            p = subprocess.Popen(
-                src,
-                env=penv,
-                stdout=log,
-                stderr=log,
-                shell=True,
-            )
-            p.wait()
+        p = subprocess.Popen(
+            src,
+            env=penv,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        out, err = p.communicate()
         if p.returncode == 0:
             print('pass')
         else:
+            with open(tgt, 'w+') as log:
+                log.write(out)
+                log.write(err)
             print('fail')
             ok = False
     if not ok:
@@ -191,19 +197,18 @@ tests = [
 ]
 
 for i, test in enumerate(tests):
-    tests[i] = debug_env.Program(test, [test + '.c'], LIBS=[libnu, 'm'])
+    tests[i] = debug_env.Program(
+        test,
+        [test + '.c'],
+        LIBPATH='.',
+        LIBS=libs + ['nu'],
+    )
 
 Default(libnu)
 
 all = [libnu] + tests
 env.Alias('all', all)
 
-dir = os.path.abspath('.')
-if system == 'darwin':
-    penv = {'DYLD_FALLBACK_LIBRARY_PATH': dir}
-else:
-    penv = {'LD_LIBRARY_PATH': dir}
-run = functools.partial(run, penv)
 check = Command('check.log', tests, run)
 AlwaysBuild(check)
 env.Alias('check', check)
