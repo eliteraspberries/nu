@@ -106,12 +106,27 @@ def run(target, source, env):
         Exit(1)
 
 
-def dumpmachine(env):
-    output = subprocess.check_output([env.get('CC', 'cc'), '-dumpmachine'])
-    target = output.rstrip('\n')
-    cpu, vendor, os = target.split('-', 2)
-    system = re.compile(r'([a-z]*)[-]?(.*)').match(os).group(1)
-    return (cpu, vendor, system)
+def gettarget(env):
+    opts = [
+        '-print-target-triple',
+        '-print-multiarch',
+        '-dumpmachine',
+    ]
+    for opt in opts:
+        try:
+            output = subprocess.check_output(
+                env.get('CC', 'cc').split() +
+                env.get('CFLAGS', '').split() +
+                [opt]
+            )
+            target = output.rstrip('\n').split('-')
+            cpu = target[0]
+            vendor = target[1]
+            system = re.match(r'([a-z]*)(.*)', target[-1]).group(1)
+            return (cpu, vendor, system)
+        except:
+            pass
+    return (None, None, None)
 
 
 def generate(target, source, env):
@@ -134,7 +149,7 @@ def generate(target, source, env):
 
 generator = Builder(action=generate)
 
-_, _, system = dumpmachine(os.environ)
+_, _, system = gettarget(os.environ)
 try:
     platform = Platform(system)
 except:
