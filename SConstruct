@@ -217,6 +217,8 @@ if not all(map(conf.CheckCHeader, headers)):
     Exit(1)
 if not all(map(conf.CheckCHeader, system_headers.get(system, []))):
     Exit(1)
+if system == 'android':
+    libs = [x for x in libs if not x in ['pthread', 'rt']]
 for i, lib in enumerate(libs):
     if not conf.CheckLib(lib):
         del libs[i]
