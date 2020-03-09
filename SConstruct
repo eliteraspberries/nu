@@ -149,7 +149,8 @@ def gettarget(env):
             output = subprocess.check_output(
                 env.get('CC', 'cc').split() +
                 env.get('CFLAGS', '').split() +
-                [opt]
+                [opt],
+                universal_newlines=True,
             )
             target = output.rstrip('\n').split('-')
             cpu = target[0]

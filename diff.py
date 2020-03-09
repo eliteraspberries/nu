@@ -1,8 +1,11 @@
-# Copyright 2019, Mansour Moufid <mansourmoufid@gmail.com>
+# Copyright 2019, 2020, Mansour Moufid <mansourmoufid@gmail.com>
 
 from __future__ import print_function
 
-import StringIO
+try:
+    from StringIO import StringIO
+except:
+    from io import StringIO
 import string
 import sys
 
@@ -26,7 +29,7 @@ cos = {
 
 indent = ' ' * 4
 
-co = StringIO.StringIO()
+co = StringIO()
 nco = max(cos.keys())
 
 print('{', file=co)
